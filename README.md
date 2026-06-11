@@ -1,6 +1,18 @@
 # Task Duty - Backend
 
+## Environment Variables
+Create a `.env` file in the server folder with:
+```
+PORT=8090
+MONGO_URI=your_mongodb_connection_string
+NODE_ENV=development
+```
 Built with Node.js + Express + MongoDB
+
+
+## Prerequisites
+- Node.js
+- MongoDB Atlas account
 
 ## Run the Backend
 ```bash
