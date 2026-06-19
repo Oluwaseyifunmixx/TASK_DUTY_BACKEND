@@ -22,7 +22,8 @@ export const CreateTask = async (req: Request, res: Response): Promise<void>=>{
             description,
             dueDate,
             update,
-            completed
+            completed,
+            userId: req.user?._id
         });
         res.status(201).json({
             success: true,
@@ -39,7 +40,7 @@ export const CreateTask = async (req: Request, res: Response): Promise<void>=>{
 // Get All Task
 export const GetAllTask = async (req:Request, res:Response): Promise<void>=>{
     try {
-        const tasks = await Task.find()
+        const tasks = await Task.find({userId: req.user?._id})
         res.status(200).json({
             success: true,
             tasks
@@ -55,7 +56,7 @@ export const GetAllTask = async (req:Request, res:Response): Promise<void>=>{
 // Get A single Task
 export const GetSingleTask = async (req:Request, res: Response):Promise<void>=>{
     try {
-        const task = await Task.findById(req.params.id)
+        const task = await Task.findOne({_id: req.params.id, userId: req.user?._id})
         if (!task) {
          res.status(404).json({
             success: false,
@@ -79,16 +80,16 @@ export const GetSingleTask = async (req:Request, res: Response):Promise<void>=>{
 export const UpdateATask = async (req:Request, res:Response): Promise<void>=>{
     try {
       const {
-        taskTtitle,
+        taskTitle,
         description,
         dueDate,
         update,
-        completed
+        completed,
       }  = req.body
 
-      const UpdatedTask = await Task.findByIdAndUpdate(
-        req.params.id,
-        {taskTtitle, description, dueDate, update, completed},
+      const UpdatedTask = await Task.findOneAndUpdate(
+       {_id: req.params.id, userId: req.user?._id},
+        {taskTitle, description, dueDate, update, completed},
         {new: true, runValidators: true}
       )
 
@@ -114,13 +115,14 @@ export const UpdateATask = async (req:Request, res:Response): Promise<void>=>{
 // Delete A task
 export const DeleteTask = async (req:Request, res: Response): Promise<void> =>{
     try {
-        const deletedTask = await Task.findByIdAndDelete(req.params.id)
+        const deletedTask = await Task.findOneAndDelete({_id: req.params.id, userId: req.user?._id})
 
         if(!deletedTask){
              res.status(404).json({
                 success: false,
                 message: "No task found"
-             })
+             });
+             return;
         }
         res.status(200).json({
             success: true,

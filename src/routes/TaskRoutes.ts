@@ -1,12 +1,13 @@
 import express from "express";
 import { CreateTask, GetAllTask, GetSingleTask, UpdateATask, DeleteTask } from "../controllers/taskController";
+import { protect } from "../middleware/authMiddleware";
 
 const router = express.Router()
 
-router.get("/", GetAllTask);
-router.get("/:id", GetSingleTask);
-router.post("/", CreateTask);
-router.put("/:id", UpdateATask);
-router.delete("/:id", DeleteTask)
+router.get("/", protect, GetAllTask);
+router.get("/:id",protect, GetSingleTask);
+router.post("/", protect, CreateTask);
+router.put("/:id", protect, UpdateATask);
+router.delete("/:id", protect, DeleteTask)
 
 export default router;
